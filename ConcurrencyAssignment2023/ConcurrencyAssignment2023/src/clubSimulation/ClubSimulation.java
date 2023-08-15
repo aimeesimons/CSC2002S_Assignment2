@@ -69,8 +69,9 @@ public class ClubSimulation {
 		// add the listener to the jbutton to handle the "pressed" event
 		startB.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-
 				// THIS DOES NOTHING - MUST BE FIXED
+				Clubgoer.started.set(true);
+
 			}
 		});
 
@@ -105,7 +106,8 @@ public class ClubSimulation {
 	}
 
 	public static void main(String[] args) throws InterruptedException {
-
+		Clubgoer.paused = new AtomicBoolean(false);
+		Clubgoer.started = new AtomicBoolean(false);
 		// deal with command line arguments if provided
 		if (args.length == 4) {
 			noClubgoers = Integer.parseInt(args[0]); // total people to enter room
