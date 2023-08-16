@@ -13,7 +13,7 @@ public class Clubgoer extends Thread {
 
 	public static ClubGrid club; // shared club
 	public static AtomicBoolean paused;
-	public static AtomicBoolean started;
+	public static CountDownLatch countDownLatch;
 
 	GridBlock currentBlock;
 	private Random rand;
@@ -61,18 +61,24 @@ public class Clubgoer extends Thread {
 	// check to see if user pressed pause button
 	private synchronized void checkPause() {
 		// THIS DOES NOTHING - MUST BE FIXED
+		synchronized (paused) {
+			try {
+				while (paused.get()) {
+					wait();
+				}
+				notifyAll();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
 
 	}
 
 	private synchronized void startSim() {
 		// THIS DOES NOTHING - MUST BE FIXED
-		synchronized (started) {
+		synchronized (this) {
 			try {
-				while (!started.get()) {
-					wait();
-				}
-				notify();
-
+				countDownLatch.await();
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}

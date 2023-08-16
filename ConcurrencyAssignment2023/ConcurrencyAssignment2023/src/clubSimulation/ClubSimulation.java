@@ -70,7 +70,7 @@ public class ClubSimulation {
 		startB.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// THIS DOES NOTHING - MUST BE FIXED
-				Clubgoer.started.set(true);
+				Clubgoer.countDownLatch.countDown();
 
 			}
 		});
@@ -82,6 +82,13 @@ public class ClubSimulation {
 		pauseB.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// THIS DOES NOTHING - MUST BE FIXED
+				if (Clubgoer.paused.get() == false) {
+					Clubgoer.paused.set(true);
+					pauseB.setText("Resume");
+				} else {
+					Clubgoer.paused.set(false);
+					pauseB.setText("Pause");
+				}
 			}
 		});
 
@@ -107,7 +114,7 @@ public class ClubSimulation {
 
 	public static void main(String[] args) throws InterruptedException {
 		Clubgoer.paused = new AtomicBoolean(false);
-		Clubgoer.started = new AtomicBoolean(false);
+		Clubgoer.countDownLatch = new CountDownLatch(1);
 		// deal with command line arguments if provided
 		if (args.length == 4) {
 			noClubgoers = Integer.parseInt(args[0]); // total people to enter room
