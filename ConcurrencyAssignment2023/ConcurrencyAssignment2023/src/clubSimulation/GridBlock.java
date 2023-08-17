@@ -41,7 +41,7 @@ public class GridBlock {
 		return true;
 	}
 
-	public void release() {
+	public synchronized void release() {
 		isOccupied = -1;
 	}
 

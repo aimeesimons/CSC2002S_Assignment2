@@ -64,9 +64,8 @@ public class Clubgoer extends Thread {
 		synchronized (paused) {
 			try {
 				while (paused.get()) {
-					wait();
+					Thread.sleep(1000);
 				}
-				notifyAll();
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
