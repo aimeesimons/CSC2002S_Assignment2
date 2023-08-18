@@ -56,6 +56,10 @@ public class Clubgoer extends Thread {
 		return movingSpeed;
 	}
 
+	public PeopleLocation getLocation() {
+		return myLocation;
+	}
+
 	// setter
 
 	// check to see if user pressed pause button

@@ -82,6 +82,7 @@ public class ClubGrid {
 		while (counter.overCapacity()) {
 			wait(1000);
 		}
+
 		entrance.get(myLocation.getID());
 		counter.personEntered(); // add to counter
 		myLocation.setLocation(entrance);
@@ -124,6 +125,7 @@ public class ClubGrid {
 		counter.personLeft(); // add to counter
 		myLocation.setInRoom(false);
 		entrance.notifyAll();
+
 	}
 
 	public synchronized GridBlock getExit() {

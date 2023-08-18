@@ -23,6 +23,8 @@ public class ClubSimulation {
 
 	static Clubgoer[] patrons; // array for customer threads
 	static PeopleLocation[] peopleLocations; // array to keep track of where customers are
+	static AndreTheBarman andreTheBarman;
+	static PeopleLocation barmanLocation;
 
 	static PeopleCounter tallys; // counters for number of people inside and outside club
 
@@ -33,7 +35,7 @@ public class ClubSimulation {
 	private static int maxWait = 1200; // for the slowest customer
 	private static int minWait = 500; // for the fastest cutomer
 
-	public static void setupGUI(int frameX, int frameY, int[] exits) {
+	public static void setupGUI(int frameX, int frameY, int[] exits) throws InterruptedException {
 		// Frame initialize and dimensions
 		JFrame frame = new JFrame("club animation");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -133,12 +135,15 @@ public class ClubSimulation {
 
 		peopleLocations = new PeopleLocation[noClubgoers];
 		patrons = new Clubgoer[noClubgoers];
+		int movingSpeed = (int) (Math.random() * (maxWait - minWait) + minWait);
+		// barmanLocation = new PeopleLocation(noClubgoers);
+		// andreTheBarman = new AndreTheBarman(barmanLocation, movingSpeed);
 
 		Random rand = new Random();
 
 		for (int i = 0; i < noClubgoers; i++) {
 			peopleLocations[i] = new PeopleLocation(i);
-			int movingSpeed = (int) (Math.random() * (maxWait - minWait) + minWait); // range of speeds for customers
+			movingSpeed = (int) (Math.random() * (maxWait - minWait) + minWait); // range of speeds for customers
 			patrons[i] = new Clubgoer(i, peopleLocations[i], movingSpeed);
 		}
 
@@ -153,6 +158,7 @@ public class ClubSimulation {
 		for (int i = 0; i < noClubgoers; i++) {
 			patrons[i].start();
 		}
+		// andreTheBarman.start();
 	}
 
 }
