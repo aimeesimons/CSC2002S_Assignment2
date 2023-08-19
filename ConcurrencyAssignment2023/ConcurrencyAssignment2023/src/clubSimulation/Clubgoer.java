@@ -102,6 +102,7 @@ public class Clubgoer extends Thread {
 	// DO NOT CHANGE THE CODE BELOW HERE - it is not necessary
 	// clubgoer enters club
 	public void enterClub() throws InterruptedException {
+
 		currentBlock = club.enterClub(myLocation); // enter through entrance
 		inRoom = true;
 		System.out.println(
@@ -213,7 +214,9 @@ public class Clubgoer extends Thread {
 			}
 			System.out.println("Thread " + this.ID + " is done");
 
-		} catch (InterruptedException e1) { // do nothing
+		} catch (
+
+		InterruptedException e1) { // do nothing
 		}
 	}
 

@@ -3,6 +3,8 @@
 
 package clubSimulation;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 //This class represents the club as a grid of GridBlocks
 public class ClubGrid {
 	private GridBlock[][] Blocks;
@@ -14,6 +16,8 @@ public class ClubGrid {
 	private GridBlock entrance; // hard coded entrance
 	private final static int minX = 5;// minimum x dimension
 	private final static int minY = 5;// minimum y dimension
+	public static AtomicBoolean full = new AtomicBoolean(false);
+	private Object lockObject = new Object();
 
 	private PeopleCounter counter;
 
@@ -82,7 +86,6 @@ public class ClubGrid {
 		while (counter.overCapacity()) {
 			wait(1000);
 		}
-
 		entrance.get(myLocation.getID());
 		counter.personEntered(); // add to counter
 		myLocation.setLocation(entrance);
@@ -146,6 +149,10 @@ public class ClubGrid {
 
 	public synchronized int getBar_y() {
 		return bar_y;
+	}
+
+	public synchronized PeopleCounter getCounter() {
+		return counter;
 	}
 
 }

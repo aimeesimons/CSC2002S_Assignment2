@@ -136,8 +136,8 @@ public class ClubSimulation {
 		peopleLocations = new PeopleLocation[noClubgoers];
 		patrons = new Clubgoer[noClubgoers];
 		int movingSpeed = (int) (Math.random() * (maxWait - minWait) + minWait);
-		// barmanLocation = new PeopleLocation(noClubgoers);
-		// andreTheBarman = new AndreTheBarman(barmanLocation, movingSpeed);
+		barmanLocation = new PeopleLocation(noClubgoers);
+		andreTheBarman = new AndreTheBarman(barmanLocation, movingSpeed);
 
 		Random rand = new Random();
 
@@ -158,7 +158,7 @@ public class ClubSimulation {
 		for (int i = 0; i < noClubgoers; i++) {
 			patrons[i].start();
 		}
-		// andreTheBarman.start();
+		andreTheBarman.start();
 	}
 
 }

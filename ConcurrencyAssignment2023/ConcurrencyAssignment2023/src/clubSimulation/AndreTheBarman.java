@@ -6,10 +6,10 @@ import java.util.concurrent.CountDownLatch;
 public class AndreTheBarman extends Clubgoer implements Runnable {
     private boolean running = false;
     private GridBlock barWork;
+    GridBlock currentBlock = new GridBlock();
 
     AndreTheBarman(PeopleLocation loc, int speed) throws InterruptedException {
-        super(ClubSimulation.noClubgoers, loc, speed);
-        barWork = getLocation().getLocation();
+        super(Integer.MAX_VALUE, loc, speed);
 
     }
 
@@ -33,19 +33,16 @@ public class AndreTheBarman extends Clubgoer implements Runnable {
     public void run() {
         startSim();
         checksPause();
-        while (running) {
-            checksPause();
-            try {
-                moveAcross();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+        try {
+            moveAcross();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
 
     }
 
     private synchronized void moveAcross() throws InterruptedException {
-        currentBlock = club.move(currentBlock, -1, 0, this.getLocation());
+        currentBlock = club.move(currentBlock, 1, 0, this.getLocation());
         sleep(this.getSpeed());
     }
 
@@ -66,8 +63,8 @@ public class AndreTheBarman extends Clubgoer implements Runnable {
             try {
                 countDownLatch.await();
                 running = true;
-                // currentBlock = club.(this.getLocation());
-
+                currentBlock = new GridBlock(club.getMaxX() + 1, club.bar_y + 1, false,
+                        true, false);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

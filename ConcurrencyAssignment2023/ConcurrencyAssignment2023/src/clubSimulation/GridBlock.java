@@ -24,6 +24,13 @@ public class GridBlock {
 		coords = new int[] { x, y };
 	}
 
+	GridBlock() {
+		isBar = false;
+		isDance = false;
+		isExit = false;
+		coords = new int[] { 0, 0 };
+	}
+
 	public int getX() {
 		return coords[0];
 	}

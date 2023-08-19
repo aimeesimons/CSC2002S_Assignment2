@@ -7,8 +7,8 @@ import javax.swing.JPanel;
 
 public class ClubView extends JPanel implements Runnable {
 	private PeopleLocation[] patronLocations; // array of the locations of the patrons
-	private PeopleLocation barpersonLocation = new PeopleLocation(ClubSimulation.noClubgoers); // where is the
-																								// barperson?
+	private PeopleLocation barpersonLocation; // where is the
+												// barperson?
 	private int noPatrons; // total number in the simulation
 	private int[] exits; // where is the exit?
 	private int wIncr; // width of each block
@@ -20,8 +20,9 @@ public class ClubView extends JPanel implements Runnable {
 
 	ClubView(PeopleLocation[] custs, ClubGrid grid, int[] exits) throws InterruptedException { // constructor
 		this.patronLocations = custs;
-		this.barpersonLocation.setLocation(new GridBlock(maxX + 1, grid.bar_y + 1, false, true, false));
 		noPatrons = custs.length;
+		this.barpersonLocation = new PeopleLocation(noPatrons);
+		this.barpersonLocation.setLocation(new GridBlock(maxX + 1, grid.bar_y + 1, false, true, false));
 		this.grid = grid;
 		this.exits = exits;
 		this.maxY = grid.getMaxY();
