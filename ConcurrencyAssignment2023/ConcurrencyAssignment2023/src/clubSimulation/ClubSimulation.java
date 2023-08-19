@@ -45,7 +45,7 @@ public class ClubSimulation {
 		g.setLayout(new BoxLayout(g, BoxLayout.PAGE_AXIS));
 		g.setSize(frameX, frameY);
 
-		clubView = new ClubView(peopleLocations, clubGrid, exits);
+		clubView = new ClubView(peopleLocations, barmanLocation, clubGrid, exits);
 		clubView.setSize(frameX, frameY);
 		g.add(clubView);
 
@@ -117,6 +117,7 @@ public class ClubSimulation {
 	public static void main(String[] args) throws InterruptedException {
 		Clubgoer.paused = new AtomicBoolean(false);
 		Clubgoer.countDownLatch = new CountDownLatch(1);
+		AndreTheBarman.serveDrink = new AtomicBoolean(false);
 		// deal with command line arguments if provided
 		if (args.length == 4) {
 			noClubgoers = Integer.parseInt(args[0]); // total people to enter room

@@ -92,6 +92,12 @@ public class Clubgoer extends Thread {
 	// get drink at bar
 	private void getDrink() throws InterruptedException {
 		// FIX SO BARMAN GIVES THE DRINK AND IT IS NOT AUTOMATIC
+		synchronized (AndreTheBarman.serveDrink) {
+			while (AndreTheBarman.serveDrink.get()) {
+				AndreTheBarman.serveDrink.wait();
+			}
+
+		}
 		thirsty = false;
 		System.out.println(
 				"Thread " + this.ID + " got drink at bar position: " + currentBlock.getX() + " " + currentBlock.getY());

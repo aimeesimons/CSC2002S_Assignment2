@@ -14,6 +14,7 @@ public class ClubGrid {
 
 	private GridBlock exit;
 	private GridBlock entrance; // hard coded entrance
+	private GridBlock bar;
 	private final static int minX = 5;// minimum x dimension
 	private final static int minY = 5;// minimum y dimension
 	public static AtomicBoolean full = new AtomicBoolean(false);
@@ -32,6 +33,7 @@ public class ClubGrid {
 		Blocks = new GridBlock[x][y];
 		this.initGrid(exitBlocks);
 		entrance = Blocks[getMaxX() / 2][0];
+		bar = Blocks[getMaxX() - 1][18];
 		counter = c;
 	}
 
@@ -95,6 +97,14 @@ public class ClubGrid {
 
 	}
 
+	public synchronized GridBlock startBar(PeopleLocation myLocation) throws InterruptedException {
+		bar.get(myLocation.getID());
+		myLocation.setLocation(bar);
+		myLocation.setInRoom(true);
+		return bar;
+
+	}
+
 	public synchronized GridBlock move(GridBlock currentBlock, int step_x, int step_y, PeopleLocation myLocation)
 			throws InterruptedException { // try to move in
 
@@ -107,6 +117,31 @@ public class ClubGrid {
 		// restrict i an j to grid
 		if (!inPatronArea(new_x, new_y)) {
 			// Invalid move to outside - ignore
+			return currentBlock;
+		}
+
+		if ((new_x == currentBlock.getX()) && (new_y == currentBlock.getY())) // not actually moving
+			return currentBlock;
+
+		GridBlock newBlock = Blocks[new_x][new_y];
+
+		if (!newBlock.get(myLocation.getID()))
+			return currentBlock; // stay where you are
+
+		currentBlock.release(); // must release current block
+		myLocation.setLocation(newBlock);
+		return newBlock;
+	}
+
+	public synchronized GridBlock move_Barman(GridBlock currentBlock, int step_x, int step_y, PeopleLocation myLocation)
+			throws InterruptedException {
+
+		int c_x = currentBlock.getX();
+		int c_y = currentBlock.getY();
+
+		int new_x = c_x + step_x; // new block x coordinates
+		int new_y = c_y + step_y; // new block y coordinates
+		if (new_x <= 0 || new_x >= 20) {
 			return currentBlock;
 		}
 
@@ -155,4 +190,7 @@ public class ClubGrid {
 		return counter;
 	}
 
+	public synchronized GridBlock[][] getBlocks() {
+		return Blocks;
+	}
 }

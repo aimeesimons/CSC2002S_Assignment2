@@ -18,11 +18,10 @@ public class ClubView extends JPanel implements Runnable {
 
 	ClubGrid grid; // shared grid
 
-	ClubView(PeopleLocation[] custs, ClubGrid grid, int[] exits) throws InterruptedException { // constructor
+	ClubView(PeopleLocation[] custs, PeopleLocation barman, ClubGrid grid, int[] exits) throws InterruptedException { // constructor
 		this.patronLocations = custs;
 		noPatrons = custs.length;
-		this.barpersonLocation = new PeopleLocation(noPatrons);
-		this.barpersonLocation.setLocation(new GridBlock(maxX + 1, grid.bar_y + 1, false, true, false));
+		this.barpersonLocation = barman;
 		this.grid = grid;
 		this.exits = exits;
 		this.maxY = grid.getMaxY();
@@ -80,12 +79,13 @@ public class ClubView extends JPanel implements Runnable {
 		g.setFont(new Font("Helvetica", Font.BOLD, hIncr / 2));
 
 		// barman should go here
-
-		g.setColor(Color.BLACK);
-		x = barpersonLocation.getX() * wIncr;
-		y = barpersonLocation.getY() * hIncr;
-		g.fillOval(x + wIncr / 4, y + hIncr / 4, wIncr / 2, hIncr / 2);
-		g.drawString("A", x + wIncr / 4, y + wIncr / 4);
+		if (barpersonLocation.inRoom()) {
+			g.setColor(Color.BLACK);
+			x = barpersonLocation.getX() * wIncr;
+			y = barpersonLocation.getY() * hIncr;
+			g.fillOval(x + wIncr / 4, y + hIncr / 4, wIncr / 2, hIncr / 2);
+			g.drawString("A", x + wIncr / 4, y + wIncr / 4);
+		}
 
 		// patrons
 		for (int i = 0; i < noPatrons; i++) {
