@@ -13,13 +13,13 @@ import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ClubSimulation {
-	static int noClubgoers = 20;
+	static int noClubgoers = 3;
 	static int frameX = 500;
 	static int frameY = 500;
 	static int yLimit = 400;
 	static int gridX = 20; // number of x grids in club - default value if not provided on command line
 	static int gridY = 20; // number of y grids in club - default value if not provided on command line
-	static int max = 10; // max number of customers - default value if not provided on command line
+	static int max = 2; // max number of customers - default value if not provided on command line
 
 	static Clubgoer[] patrons; // array for customer threads
 	static PeopleLocation[] peopleLocations; // array to keep track of where customers are
@@ -71,7 +71,6 @@ public class ClubSimulation {
 		// add the listener to the jbutton to handle the "pressed" event
 		startB.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				// THIS DOES NOTHING - MUST BE FIXED
 				Clubgoer.countDownLatch.countDown();
 
 			}
@@ -84,12 +83,15 @@ public class ClubSimulation {
 		pauseB.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// THIS DOES NOTHING - MUST BE FIXED
-				if (Clubgoer.paused.get() == false) {
-					Clubgoer.paused.set(true);
-					pauseB.setText("Resume");
-				} else {
-					Clubgoer.paused.set(false);
-					pauseB.setText("Pause");
+				synchronized (Clubgoer.paused) {
+					if (Clubgoer.paused.get() == false) {
+						Clubgoer.paused.set(true);
+						pauseB.setText("Resume");
+					} else {
+						Clubgoer.paused.set(false);
+						Clubgoer.paused.notifyAll();
+						pauseB.setText("Pause");
+					}
 				}
 			}
 		});
@@ -117,7 +119,8 @@ public class ClubSimulation {
 	public static void main(String[] args) throws InterruptedException {
 		Clubgoer.paused = new AtomicBoolean(false);
 		Clubgoer.countDownLatch = new CountDownLatch(1);
-		AndreTheBarman.serveDrink = new AtomicBoolean(false);
+		AtomicBoolean served = new AtomicBoolean(false);
+
 		// deal with command line arguments if provided
 		if (args.length == 4) {
 			noClubgoers = Integer.parseInt(args[0]); // total people to enter room
@@ -138,14 +141,15 @@ public class ClubSimulation {
 		patrons = new Clubgoer[noClubgoers];
 		int movingSpeed = (int) (Math.random() * (maxWait - minWait) + minWait);
 		barmanLocation = new PeopleLocation(noClubgoers);
-		andreTheBarman = new AndreTheBarman(barmanLocation, movingSpeed);
+		andreTheBarman = new AndreTheBarman(barmanLocation, movingSpeed, served, clubGrid, Clubgoer.paused,
+				Clubgoer.countDownLatch);
 
 		Random rand = new Random();
 
 		for (int i = 0; i < noClubgoers; i++) {
 			peopleLocations[i] = new PeopleLocation(i);
 			movingSpeed = (int) (Math.random() * (maxWait - minWait) + minWait); // range of speeds for customers
-			patrons[i] = new Clubgoer(i, peopleLocations[i], movingSpeed);
+			patrons[i] = new Clubgoer(i, peopleLocations[i], movingSpeed, served);
 		}
 
 		setupGUI(frameX, frameY, exit); // Start Panel thread - for drawing animation
@@ -156,10 +160,11 @@ public class ClubSimulation {
 		Thread s = new Thread(counterDisplay);
 		s.start();
 
+		andreTheBarman.start();
 		for (int i = 0; i < noClubgoers; i++) {
 			patrons[i].start();
 		}
-		andreTheBarman.start();
+
 	}
 
 }

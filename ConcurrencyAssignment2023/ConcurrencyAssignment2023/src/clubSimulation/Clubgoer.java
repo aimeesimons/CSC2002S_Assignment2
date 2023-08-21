@@ -23,10 +23,12 @@ public class Clubgoer extends Thread {
 	private boolean inRoom;
 	private boolean thirsty;
 	private boolean wantToLeave;
+	public static AtomicBoolean lock = new AtomicBoolean(false);
+	public static AtomicBoolean served;
 
 	private int ID; // thread ID
 
-	Clubgoer(int ID, PeopleLocation loc, int speed) {
+	Clubgoer(int ID, PeopleLocation loc, int speed, AtomicBoolean served) {
 		this.ID = ID;
 		movingSpeed = speed; // range of speeds for customers
 		this.myLocation = loc; // for easy lookups
@@ -34,6 +36,8 @@ public class Clubgoer extends Thread {
 		thirsty = true; // thirsty when arrive
 		wantToLeave = false; // want to stay when arrive
 		rand = new Random();
+
+		this.served = served;
 	}
 
 	// getter
@@ -68,7 +72,7 @@ public class Clubgoer extends Thread {
 		synchronized (paused) {
 			try {
 				while (paused.get()) {
-					Thread.sleep(1000);
+					paused.wait();
 				}
 			} catch (InterruptedException e) {
 				e.printStackTrace();
@@ -89,14 +93,22 @@ public class Clubgoer extends Thread {
 
 	}
 
-	// get drink at bar
-	private void getDrink() throws InterruptedException {
-		// FIX SO BARMAN GIVES THE DRINK AND IT IS NOT AUTOMATIC
-		synchronized (AndreTheBarman.serveDrink) {
-			while (AndreTheBarman.serveDrink.get()) {
-				AndreTheBarman.serveDrink.wait();
-			}
+	public synchronized boolean BarmanInBlock() throws InterruptedException {
 
+		if (club.whichBlock(currentBlock.getX(), club.getBar_y() + 1).occupied()) {
+			return true;
+		}
+		return false;
+
+	}
+
+	// get drink at bar
+	private synchronized void getDrink() throws InterruptedException {
+		// FIX SO BARMAN GIVES THE DRINK AND IT IS NOT AUTOMATIC
+		synchronized (served) {
+			while (!served.get() && !BarmanInBlock()) {
+				served.wait();
+			}
 		}
 		thirsty = false;
 		System.out.println(
@@ -172,6 +184,7 @@ public class Clubgoer extends Thread {
 
 	public void run() {
 		try {
+			lock.set(false);
 			startSim();
 			checkPause();
 			sleep(movingSpeed * (rand.nextInt(100) + 1)); // arriving takes a while

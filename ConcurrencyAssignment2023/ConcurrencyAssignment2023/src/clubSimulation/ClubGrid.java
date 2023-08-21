@@ -17,8 +17,6 @@ public class ClubGrid {
 	private GridBlock bar;
 	private final static int minX = 5;// minimum x dimension
 	private final static int minY = 5;// minimum y dimension
-	public static AtomicBoolean full = new AtomicBoolean(false);
-	private Object lockObject = new Object();
 
 	private PeopleCounter counter;
 
@@ -33,7 +31,7 @@ public class ClubGrid {
 		Blocks = new GridBlock[x][y];
 		this.initGrid(exitBlocks);
 		entrance = Blocks[getMaxX() / 2][0];
-		bar = Blocks[getMaxX() - 1][18];
+		bar = Blocks[getMaxX() - 1][getBar_y() + 1];
 		counter = c;
 	}
 
@@ -83,16 +81,21 @@ public class ClubGrid {
 		return true;
 	}
 
-	public synchronized GridBlock enterClub(PeopleLocation myLocation) throws InterruptedException {
-		counter.personArrived(); // add to counter of people waiting
-		while (counter.overCapacity()) {
-			wait(1000);
-		}
-		entrance.get(myLocation.getID());
-		counter.personEntered(); // add to counter
-		myLocation.setLocation(entrance);
-		myLocation.setInRoom(true);
+	public GridBlock enterClub(PeopleLocation myLocation) throws InterruptedException {
+		synchronized (counter) {
+			counter.personArrived(); // add to counter of people waiting
+			try {
+				while (counter.overCapacity())
+					counter.wait();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			entrance.get(myLocation.getID());
+			counter.personEntered(); // add to counter
+			myLocation.setLocation(entrance);
+			myLocation.setInRoom(true);
 
+		}
 		return entrance;
 
 	}
@@ -100,12 +103,13 @@ public class ClubGrid {
 	public synchronized GridBlock startBar(PeopleLocation myLocation) throws InterruptedException {
 		bar.get(myLocation.getID());
 		myLocation.setLocation(bar);
+		System.out.println(myLocation.getX() + " " + myLocation.getY());
 		myLocation.setInRoom(true);
 		return bar;
 
 	}
 
-	public synchronized GridBlock move(GridBlock currentBlock, int step_x, int step_y, PeopleLocation myLocation)
+	public GridBlock move(GridBlock currentBlock, int step_x, int step_y, PeopleLocation myLocation)
 			throws InterruptedException { // try to move in
 
 		int c_x = currentBlock.getX();
@@ -133,7 +137,7 @@ public class ClubGrid {
 		return newBlock;
 	}
 
-	public synchronized GridBlock move_Barman(GridBlock currentBlock, int step_x, int step_y, PeopleLocation myLocation)
+	public GridBlock move_Barman(GridBlock currentBlock, int step_x, int step_y, PeopleLocation myLocation)
 			throws InterruptedException {
 
 		int c_x = currentBlock.getX();
@@ -158,11 +162,14 @@ public class ClubGrid {
 		return newBlock;
 	}
 
-	public synchronized void leaveClub(GridBlock currentBlock, PeopleLocation myLocation) {
-		currentBlock.release();
-		counter.personLeft(); // add to counter
-		myLocation.setInRoom(false);
-		entrance.notifyAll();
+	public void leaveClub(GridBlock currentBlock, PeopleLocation myLocation) {
+		synchronized (counter) {
+			currentBlock.release();
+			counter.personLeft(); // add to counter
+			myLocation.setInRoom(false);
+			// entrance.notifyAll();
+			counter.notifyAll();
+		}
 
 	}
 
@@ -170,7 +177,7 @@ public class ClubGrid {
 		return exit;
 	}
 
-	public synchronized GridBlock whichBlock(int xPos, int yPos) {
+	public GridBlock whichBlock(int xPos, int yPos) {
 		if (inGrid(xPos, yPos)) {
 			return Blocks[xPos][yPos];
 		}
@@ -178,11 +185,11 @@ public class ClubGrid {
 		return null;
 	}
 
-	public synchronized void setExit(GridBlock exit) {
+	public void setExit(GridBlock exit) {
 		this.exit = exit;
 	}
 
-	public synchronized int getBar_y() {
+	public int getBar_y() {
 		return bar_y;
 	}
 
@@ -193,4 +200,5 @@ public class ClubGrid {
 	public synchronized GridBlock[][] getBlocks() {
 		return Blocks;
 	}
+
 }
