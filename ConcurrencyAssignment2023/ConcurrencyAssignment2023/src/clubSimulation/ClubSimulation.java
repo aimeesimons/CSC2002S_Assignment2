@@ -13,13 +13,13 @@ import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ClubSimulation {
-	static int noClubgoers = 3;
+	static int noClubgoers = 10;
 	static int frameX = 500;
 	static int frameY = 500;
 	static int yLimit = 400;
-	static int gridX = 20; // number of x grids in club - default value if not provided on command line
-	static int gridY = 20; // number of y grids in club - default value if not provided on command line
-	static int max = 2; // max number of customers - default value if not provided on command line
+	static int gridX = 10; // number of x grids in club - default value if not provided on command line
+	static int gridY = 10; // number of y grids in club - default value if not provided on command line
+	static int max = 5; // max number of customers - default value if not provided on command line
 
 	static Clubgoer[] patrons; // array for customer threads
 	static PeopleLocation[] peopleLocations; // array to keep track of where customers are

@@ -81,7 +81,7 @@ public class ClubView extends JPanel implements Runnable {
 		// barman should go here
 		if (barpersonLocation.inRoom()) {
 			g.setColor(Color.BLACK);
-			x = barpersonLocation.getX() * wIncr;
+			x = (barpersonLocation.getX() + 1) * wIncr;
 			y = barpersonLocation.getY() * hIncr;
 			g.fillOval(x + wIncr / 4, y + hIncr / 4, wIncr / 2, hIncr / 2);
 			g.drawString("A", x + wIncr / 4, y + wIncr / 4);

@@ -104,12 +104,11 @@ public class Clubgoer extends Thread {
 
 	// get drink at bar
 	private synchronized void getDrink() throws InterruptedException {
-		// FIX SO BARMAN GIVES THE DRINK AND IT IS NOT AUTOMATIC
-		synchronized (served) {
-			while (!served.get() && !BarmanInBlock()) {
-				served.wait();
-			}
+
+		while (!BarmanInBlock()) {
+			wait(1000);
 		}
+		wait(1000);
 		thirsty = false;
 		System.out.println(
 				"Thread " + this.ID + " got drink at bar position: " + currentBlock.getX() + " " + currentBlock.getY());
@@ -184,7 +183,6 @@ public class Clubgoer extends Thread {
 
 	public void run() {
 		try {
-			lock.set(false);
 			startSim();
 			checkPause();
 			sleep(movingSpeed * (rand.nextInt(100) + 1)); // arriving takes a while
@@ -227,7 +225,7 @@ public class Clubgoer extends Thread {
 						System.out.println("Thread " + this.ID + " dancing ");
 					}
 					wander();
-					System.out.println("Thread " + this.ID + " wandering about ");
+					// System.out.println("Thread " + this.ID + " wandering about ");
 				}
 
 			}

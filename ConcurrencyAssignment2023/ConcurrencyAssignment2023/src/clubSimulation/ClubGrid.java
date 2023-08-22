@@ -103,7 +103,6 @@ public class ClubGrid {
 	public synchronized GridBlock startBar(PeopleLocation myLocation) throws InterruptedException {
 		bar.get(myLocation.getID());
 		myLocation.setLocation(bar);
-		System.out.println(myLocation.getX() + " " + myLocation.getY());
 		myLocation.setInRoom(true);
 		return bar;
 
@@ -145,7 +144,7 @@ public class ClubGrid {
 
 		int new_x = c_x + step_x; // new block x coordinates
 		int new_y = c_y + step_y; // new block y coordinates
-		if (new_x <= 0 || new_x >= 20) {
+		if (new_x <= -1 || new_x >= 20) {
 			return currentBlock;
 		}
 

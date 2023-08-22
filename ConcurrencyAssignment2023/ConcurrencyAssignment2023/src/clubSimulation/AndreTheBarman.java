@@ -12,7 +12,7 @@ public class AndreTheBarman extends Thread {
     public int movingSpeed = 0;
     public int countSteps = 0;
     Random rand = new Random();
-    public static AtomicBoolean served;
+    public AtomicBoolean served;
     int x_mv = -1;
     public static ClubGrid club; // shared club
     public static AtomicBoolean paused;
@@ -31,7 +31,7 @@ public class AndreTheBarman extends Thread {
 
     public synchronized boolean patronInBlock() throws InterruptedException {
 
-        if (club.whichBlock(currentBlock.getX() - 1, club.getBar_y()).occupied()) {
+        if (club.whichBlock(currentBlock.getX(), club.getBar_y()).occupied()) {
             return true;
         }
         return false;
@@ -39,7 +39,7 @@ public class AndreTheBarman extends Thread {
     }
 
     public void Working() throws InterruptedException {
-        currentBlock = club.startBar(myLocation); // enter through entrance
+        currentBlock = club.startBar(myLocation); //
         sleep(movingSpeed / 2); // wait a bit at door
     }
 
@@ -55,7 +55,6 @@ public class AndreTheBarman extends Thread {
         while (running) {
             try {
                 checksPause();
-                served.set(false);
                 moveAcross();
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -64,20 +63,15 @@ public class AndreTheBarman extends Thread {
 
     }
 
-    private synchronized void moveAcross() throws InterruptedException {
+    private void moveAcross() throws InterruptedException {
         synchronized (currentBlock) {
             if (currentBlock.getX() + 1 >= club.getMaxX()) {
-                currentBlock = club.move_Barman(currentBlock, 1, 0, myLocation);
                 x_mv = -1;
-            } else if (currentBlock.getX() - 1 <= 0) {
+            } else if (currentBlock.getX() - 1 <= -1) {
                 x_mv = 1;
             }
             if (patronInBlock()) {
                 Thread.sleep(1000);
-                synchronized (served) {
-                    served.set(true);
-                    served.notify();
-                }
             }
             currentBlock = club.move_Barman(currentBlock, x_mv, 0, myLocation);
             sleep(movingSpeed);
