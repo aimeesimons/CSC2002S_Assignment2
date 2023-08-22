@@ -5,7 +5,7 @@
 There are 4 rules/targets established in the Makefile:
 * ```make```: This compiles all the files and saves the .class files in the bin/clubSimulation folder.
 * ```make run```: This compiles and runs the program. 
-* ```make clean```: This removes the .class files from the bin/clubSimulation folder.\
+* ```make clean```: This removes the .class files from the bin/clubSimulation folder.
 #### *When using any of these, make sure you are in the main project folder: SMNAIM002_CSC2002S_PCP2
 
 ## Input parameters:
