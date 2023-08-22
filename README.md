@@ -1,5 +1,5 @@
 # CSC2002S 
-## PCP Assignment 1 SMNAIM002
+## PCP Assignment 2 SMNAIM002
 
 ## Getting started:
 There are 4 rules/targets established in the Makefile:
