@@ -82,6 +82,7 @@ public class ClubGrid {
 	}
 
 	public GridBlock enterClub(PeopleLocation myLocation) throws InterruptedException {
+
 		synchronized (counter) {
 			counter.personArrived(); // add to counter of people waiting
 			try {
@@ -89,6 +90,11 @@ public class ClubGrid {
 					counter.wait();
 			} catch (InterruptedException e) {
 				e.printStackTrace();
+			}
+			synchronized (entrance) {
+				while (entrance.occupied()) {
+					entrance.wait();
+				}
 			}
 			entrance.get(myLocation.getID());
 			counter.personEntered(); // add to counter
@@ -110,6 +116,11 @@ public class ClubGrid {
 
 	public GridBlock move(GridBlock currentBlock, int step_x, int step_y, PeopleLocation myLocation)
 			throws InterruptedException { // try to move in
+		synchronized (entrance) {
+			if (!entrance.occupied()) {
+				entrance.notifyAll();
+			}
+		}
 
 		int c_x = currentBlock.getX();
 		int c_y = currentBlock.getY();

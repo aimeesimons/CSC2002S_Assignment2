@@ -12,18 +12,16 @@ public class AndreTheBarman extends Thread {
     public int movingSpeed = 0;
     public int countSteps = 0;
     Random rand = new Random();
-    public AtomicBoolean served;
     int x_mv = -1;
     public static ClubGrid club; // shared club
     public static AtomicBoolean paused;
     public static CountDownLatch countDownLatch;
 
-    AndreTheBarman(PeopleLocation loc, int speed, AtomicBoolean served, ClubGrid club, AtomicBoolean paused,
+    AndreTheBarman(PeopleLocation loc, int speed, ClubGrid club, AtomicBoolean paused,
             CountDownLatch countDownLatch)
             throws InterruptedException {
         this.myLocation = loc;
         this.movingSpeed = speed;
-        this.served = served;
         this.club = club;
         this.paused = paused;
         this.countDownLatch = countDownLatch;
@@ -60,6 +58,7 @@ public class AndreTheBarman extends Thread {
                 e.printStackTrace();
             }
         }
+        System.out.println("Bar is empty.");
 
     }
 
@@ -93,7 +92,7 @@ public class AndreTheBarman extends Thread {
     private synchronized void startSim() {
         synchronized (countDownLatch) {
             try {
-                countDownLatch.await();
+                countDownLatch.await();// waiting until the latch has a value of zero.
                 running = true;
             } catch (InterruptedException e) {
                 e.printStackTrace();

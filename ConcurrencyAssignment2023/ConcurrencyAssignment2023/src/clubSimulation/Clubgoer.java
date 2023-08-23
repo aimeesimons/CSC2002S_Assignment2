@@ -23,12 +23,10 @@ public class Clubgoer extends Thread {
 	private boolean inRoom;
 	private boolean thirsty;
 	private boolean wantToLeave;
-	public static AtomicBoolean lock = new AtomicBoolean(false);
-	public static AtomicBoolean served;
 
 	private int ID; // thread ID
 
-	Clubgoer(int ID, PeopleLocation loc, int speed, AtomicBoolean served) {
+	Clubgoer(int ID, PeopleLocation loc, int speed) {
 		this.ID = ID;
 		movingSpeed = speed; // range of speeds for customers
 		this.myLocation = loc; // for easy lookups
@@ -36,8 +34,6 @@ public class Clubgoer extends Thread {
 		thirsty = true; // thirsty when arrive
 		wantToLeave = false; // want to stay when arrive
 		rand = new Random();
-
-		this.served = served;
 	}
 
 	// getter
@@ -85,7 +81,7 @@ public class Clubgoer extends Thread {
 		// THIS DOES NOTHING - MUST BE FIXED
 		synchronized (this) {
 			try {
-				countDownLatch.await();
+				countDownLatch.await();// waiting until the latch has a value of zero.
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
