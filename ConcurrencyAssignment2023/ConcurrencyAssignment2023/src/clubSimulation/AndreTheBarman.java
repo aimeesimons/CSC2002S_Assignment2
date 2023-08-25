@@ -17,6 +17,18 @@ public class AndreTheBarman extends Thread {
     public static AtomicBoolean paused;
     public static CountDownLatch countDownLatch;
 
+    /**
+     * This is the constructor for Andre the Barman, who serves the patrons drinks
+     * 
+     * @param loc            the location variable for the barman
+     * @param speed          the speed at which the barman moves
+     * @param club           the ClubGrid variable shared by all the patrons
+     * @param paused         the AtomicBoolean variable which checks whether the
+     *                       simulation is paused
+     * @param countDownLatch The CountDownLatch which enables the simulation to
+     *                       start
+     * @throws InterruptedException
+     */
     AndreTheBarman(PeopleLocation loc, int speed, ClubGrid club, AtomicBoolean paused,
             CountDownLatch countDownLatch)
             throws InterruptedException {
@@ -27,6 +39,14 @@ public class AndreTheBarman extends Thread {
         this.countDownLatch = countDownLatch;
     }
 
+    /**
+     * This method checks whether there is a patron in the block just above the
+     * barman
+     * 
+     * @return true or false depending on whether the patron is in the block above
+     *         the barman.
+     * @throws InterruptedException
+     */
     public synchronized boolean patronInBlock() throws InterruptedException {
 
         if (club.whichBlock(currentBlock.getX(), club.getBar_y()).occupied()) {
@@ -36,9 +56,15 @@ public class AndreTheBarman extends Thread {
 
     }
 
+    /**
+     * This method calls the startBar method and initialises the barman's initial
+     * position
+     * 
+     * @throws InterruptedException
+     */
     public void Working() throws InterruptedException {
-        currentBlock = club.startBar(myLocation); //
-        sleep(movingSpeed / 2); // wait a bit at door
+        currentBlock = club.startBar(myLocation);
+        sleep(movingSpeed / 2);
     }
 
     public void run() {
@@ -54,23 +80,31 @@ public class AndreTheBarman extends Thread {
             try {
                 checksPause();
                 moveAcross();
+                if (club.getCounter().getLeft() == myLocation.getID()) {// if all the patrons have come and gone
+                    running = false;// stop working
+                }
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
-        System.out.println("Bar is empty.");
+        System.out.println("Bar is empty.");// all patrons have left
 
     }
 
+    /**
+     * This function is responsible for the movement of the barman
+     */
     private void moveAcross() throws InterruptedException {
         synchronized (currentBlock) {
-            if (currentBlock.getX() + 1 >= club.getMaxX()) {
+            if (currentBlock.getX() + 1 >= club.getMaxX()) {// if the barman has reached the limit of the grid, change
+                                                            // direction
                 x_mv = -1;
-            } else if (currentBlock.getX() - 1 <= -1) {
+            } else if (currentBlock.getX() - 1 <= -1) {// if the barman has reached the linit of the grid, change
+                                                       // direction
                 x_mv = 1;
             }
-            if (patronInBlock()) {
-                Thread.sleep(1000);
+            if (patronInBlock()) {// if there is a patron in the block
+                Thread.sleep(1000);// serve them
             }
             currentBlock = club.move_Barman(currentBlock, x_mv, 0, myLocation);
             sleep(movingSpeed);
@@ -81,7 +115,7 @@ public class AndreTheBarman extends Thread {
         synchronized (paused) {
             try {
                 while (paused.get()) {
-                    paused.wait();
+                    paused.wait();// waiting while paused is true
                 }
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -93,7 +127,7 @@ public class AndreTheBarman extends Thread {
         synchronized (countDownLatch) {
             try {
                 countDownLatch.await();// waiting until the latch has a value of zero.
-                running = true;
+                running = true;// conditon variable for the while loop
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

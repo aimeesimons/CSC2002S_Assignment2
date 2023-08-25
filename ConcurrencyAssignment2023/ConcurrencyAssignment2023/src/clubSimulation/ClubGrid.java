@@ -86,17 +86,17 @@ public class ClubGrid {
 		synchronized (counter) {
 			counter.personArrived(); // add to counter of people waiting
 			try {
-				while (counter.overCapacity())
+				while (counter.overCapacity())// while the club is overcapacity
 					counter.wait();
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
 			synchronized (entrance) {
-				while (entrance.occupied()) {
+				while (!entrance.get(myLocation.getID())) {// while the entrance block is occupied
 					entrance.wait();
 				}
 			}
-			entrance.get(myLocation.getID());
+			// entrance.get(myLocation.getID());
 			counter.personEntered(); // add to counter
 			myLocation.setLocation(entrance);
 			myLocation.setInRoom(true);
@@ -106,8 +106,16 @@ public class ClubGrid {
 
 	}
 
+	/**
+	 * This function sets the initial postition of the barman
+	 * 
+	 * @param myLocation the PeopleLocation variable of the barman
+	 * @return the barman initial postition
+	 * @throws InterruptedException
+	 */
+
 	public synchronized GridBlock startBar(PeopleLocation myLocation) throws InterruptedException {
-		bar.get(myLocation.getID());
+		// bar.get(myLocation.getID());
 		myLocation.setLocation(bar);
 		myLocation.setInRoom(true);
 		return bar;
@@ -147,6 +155,18 @@ public class ClubGrid {
 		return newBlock;
 	}
 
+	/**
+	 * This method coordinates the movement of the barman. As he is not within the
+	 * patron area, this separate function which provides similar code to the move()
+	 * function was created
+	 * 
+	 * @param currentBlock the current block of the barman
+	 * @param step_x       the number of steps to move -> either -1 or 1
+	 * @param step_y       the y movement -> alwasy equal to zero
+	 * @param myLocation   the PeopleLocation variable of the barman
+	 * @return the next block to move to
+	 * @throws InterruptedException
+	 */
 	public GridBlock move_Barman(GridBlock currentBlock, int step_x, int step_y, PeopleLocation myLocation)
 			throws InterruptedException {
 
@@ -178,7 +198,7 @@ public class ClubGrid {
 			counter.personLeft(); // add to counter
 			myLocation.setInRoom(false);
 			// entrance.notifyAll();
-			counter.notifyAll();
+			counter.notifyAll();// notify all patron threads to attempt to enter the club
 		}
 
 	}

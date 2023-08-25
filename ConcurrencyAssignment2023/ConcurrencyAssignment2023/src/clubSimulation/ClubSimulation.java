@@ -66,31 +66,29 @@ public class ClubSimulation {
 		// Add start, pause and exit buttons
 		JPanel b = new JPanel();
 		b.setLayout(new BoxLayout(b, BoxLayout.LINE_AXIS));
-		JButton startB = new JButton("Start");
-
+		final JButton startB = new JButton("Start");
 		// add the listener to the jbutton to handle the "pressed" event
 		startB.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				Clubgoer.countDownLatch.countDown();// Decrementing the latch
+				startB.setEnabled(false);
 
 			}
 		});
 
 		final JButton pauseB = new JButton("Pause ");
-		;
-
 		// add the listener to the jbutton to handle the "pressed" event
 		pauseB.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// THIS DOES NOTHING - MUST BE FIXED
-				synchronized (Clubgoer.paused) {
-					if (Clubgoer.paused.get() == false) {
-						Clubgoer.paused.set(true);
-						pauseB.setText("Resume");
+				synchronized (Clubgoer.paused) {// put lock on the paused variable
+					if (Clubgoer.paused.get() == false) {// if paused is false
+						Clubgoer.paused.set(true);// set true
+						pauseB.setText("Resume");// change the text of the button to "Resume"
 					} else {
-						Clubgoer.paused.set(false);
-						Clubgoer.paused.notifyAll();
-						pauseB.setText("Pause");
+						Clubgoer.paused.set(false);// else set false
+						Clubgoer.paused.notifyAll();// notify the threads to continue
+						pauseB.setText("Pause");// change the text of the button to "Pause"
 					}
 				}
 			}
@@ -117,7 +115,7 @@ public class ClubSimulation {
 	}
 
 	public static void main(String[] args) throws InterruptedException {
-		Clubgoer.paused = new AtomicBoolean(false);
+		Clubgoer.paused = new AtomicBoolean(false);// initialising the paused variable to false
 		Clubgoer.countDownLatch = new CountDownLatch(1);// initialising the countdownlatch to 1
 
 		// deal with command line arguments if provided

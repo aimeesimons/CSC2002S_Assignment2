@@ -64,11 +64,10 @@ public class Clubgoer extends Thread {
 
 	// check to see if user pressed pause button
 	private synchronized void checkPause() {
-		// THIS DOES NOTHING - MUST BE FIXED
 		synchronized (paused) {
 			try {
 				while (paused.get()) {
-					paused.wait();
+					paused.wait();// wait while paused is true
 				}
 			} catch (InterruptedException e) {
 				e.printStackTrace();
@@ -77,8 +76,7 @@ public class Clubgoer extends Thread {
 
 	}
 
-	private synchronized void startSim() {
-		// THIS DOES NOTHING - MUST BE FIXED
+	private void startSim() {
 		synchronized (this) {
 			try {
 				countDownLatch.await();// waiting until the latch has a value of zero.
@@ -88,6 +86,14 @@ public class Clubgoer extends Thread {
 		}
 
 	}
+
+	/**
+	 * This function checks if the block just below the patron is occupied (by the
+	 * barman)
+	 * 
+	 * @return whether the barman is in the block just below the patron
+	 * @throws InterruptedException
+	 */
 
 	public synchronized boolean BarmanInBlock() throws InterruptedException {
 
@@ -101,10 +107,10 @@ public class Clubgoer extends Thread {
 	// get drink at bar
 	private synchronized void getDrink() throws InterruptedException {
 
-		while (!BarmanInBlock()) {
-			wait(1000);
+		while (!BarmanInBlock()) {// if the barman is in front of the patron
+			wait(1000);// wait a second
 		}
-		wait(1000);
+		wait(1000);// receive drink
 		thirsty = false;
 		System.out.println(
 				"Thread " + this.ID + " got drink at bar position: " + currentBlock.getX() + " " + currentBlock.getY());
