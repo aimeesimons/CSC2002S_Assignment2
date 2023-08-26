@@ -35,11 +35,11 @@ public class GridBlock {
 		coords = new int[] { 0, 0 };
 	}
 
-	public int getX() {
+	public synchronized int getX() {
 		return coords[0];
 	}
 
-	public int getY() {
+	public synchronized int getY() {
 		return coords[1];
 	}
 
