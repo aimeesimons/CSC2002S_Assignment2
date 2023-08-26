@@ -9,7 +9,7 @@ BINDIR=bin
 	$(JAVAC) $< 
 
 $(BINDIR)/%.class:$(SRCDIR)/%.java
-	$(JAVAC) -d $(BINDIR)/ -cp $(BINDIR) -sourcepath $(SRCDIR) $<
+	$(JAVAC) -d $(BINDIR)/ -cp $(BINDIR) $<
 
 
 CLASSES=PeopleCounter.class CounterDisplay.class GridBlock.class PeopleLocation.class ClubGrid.class ClubView.class Clubgoer.class\
