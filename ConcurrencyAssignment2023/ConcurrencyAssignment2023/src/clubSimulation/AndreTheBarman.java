@@ -113,7 +113,7 @@ public class AndreTheBarman extends Thread {
         }
     }
 
-    private synchronized void checksPause() {
+    private void checksPause() {
         synchronized (paused) {
             try {
                 while (paused.get()) {

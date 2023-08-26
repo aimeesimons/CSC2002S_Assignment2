@@ -63,7 +63,7 @@ public class Clubgoer extends Thread {
 	// setter
 
 	// check to see if user pressed pause button
-	private synchronized void checkPause() {
+	private void checkPause() {
 		synchronized (paused) {
 			try {
 				while (paused.get()) {
@@ -105,12 +105,13 @@ public class Clubgoer extends Thread {
 	}
 
 	// get drink at bar
-	private synchronized void getDrink() throws InterruptedException {
-
-		while (!BarmanInBlock()) {// if the barman is in front of the patron
-			wait(1000);// wait a second
+	private void getDrink() throws InterruptedException {
+		synchronized (this) {
+			while (!BarmanInBlock()) {// if the barman is in front of the patron
+				this.wait(1000);// wait a second
+			}
+			this.wait(1000);// receive drink
 		}
-		wait(1000);// receive drink
 		thirsty = false;
 		System.out.println(
 				"Thread " + this.ID + " got drink at bar position: " + currentBlock.getX() + " " + currentBlock.getY());
