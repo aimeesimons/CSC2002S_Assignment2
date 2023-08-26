@@ -14,9 +14,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ClubSimulation {
 	static int noClubgoers = 50;
-	static int frameX = 500;
-	static int frameY = 500;
-	static int yLimit = 500;
+	static int frameX = 650;
+	static int frameY = 650;
+	static int yLimit = 50;
 	static int gridX = 20; // number of x grids in club - default value if not provided on command line
 	static int gridY = 20; // number of y grids in club - default value if not provided on command line
 	static int max = 20; // max number of customers - default value if not provided on command line
