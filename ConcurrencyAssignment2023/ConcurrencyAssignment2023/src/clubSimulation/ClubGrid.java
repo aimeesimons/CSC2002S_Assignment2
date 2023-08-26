@@ -115,7 +115,6 @@ public class ClubGrid {
 	 */
 
 	public synchronized GridBlock startBar(PeopleLocation myLocation) throws InterruptedException {
-		// bar.get(myLocation.getID());
 		myLocation.setLocation(bar);
 		myLocation.setInRoom(true);
 		return bar;

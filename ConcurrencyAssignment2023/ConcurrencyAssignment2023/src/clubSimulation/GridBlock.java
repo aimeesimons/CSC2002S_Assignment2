@@ -24,6 +24,10 @@ public class GridBlock {
 		coords = new int[] { x, y };
 	}
 
+	/**
+	 * This contructor was created as a default in the event that no inputs are
+	 * required
+	 */
 	GridBlock() {
 		isBar = false;
 		isDance = false;

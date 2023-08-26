@@ -16,7 +16,7 @@ public class ClubSimulation {
 	static int noClubgoers = 50;
 	static int frameX = 500;
 	static int frameY = 500;
-	static int yLimit = 400;
+	static int yLimit = 500;
 	static int gridX = 20; // number of x grids in club - default value if not provided on command line
 	static int gridY = 20; // number of y grids in club - default value if not provided on command line
 	static int max = 20; // max number of customers - default value if not provided on command line
@@ -80,7 +80,6 @@ public class ClubSimulation {
 		// add the listener to the jbutton to handle the "pressed" event
 		pauseB.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				// THIS DOES NOTHING - MUST BE FIXED
 				synchronized (Clubgoer.paused) {// put lock on the paused variable
 					if (Clubgoer.paused.get() == false) {// if paused is false
 						Clubgoer.paused.set(true);// set true

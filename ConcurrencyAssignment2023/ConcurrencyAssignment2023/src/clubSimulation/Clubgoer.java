@@ -77,7 +77,7 @@ public class Clubgoer extends Thread {
 	}
 
 	private void startSim() {
-		synchronized (this) {
+		synchronized (countDownLatch) {
 			try {
 				countDownLatch.await();// waiting until the latch has a value of zero.
 			} catch (InterruptedException e) {

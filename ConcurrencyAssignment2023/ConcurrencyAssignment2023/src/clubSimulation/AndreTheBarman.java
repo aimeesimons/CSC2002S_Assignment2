@@ -4,9 +4,11 @@ import java.util.Random;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+/**
+ * This class represents Andre the Barman, who serves the patrons their drinks
+ */
 public class AndreTheBarman extends Thread {
     private boolean running = false;
-    private GridBlock barWork;
     GridBlock currentBlock = new GridBlock();
     public PeopleLocation myLocation;
     public int movingSpeed = 0;
@@ -123,7 +125,7 @@ public class AndreTheBarman extends Thread {
         }
     }
 
-    private synchronized void startSim() {
+    private void startSim() {
         synchronized (countDownLatch) {
             try {
                 countDownLatch.await();// waiting until the latch has a value of zero.
